@@ -5,6 +5,8 @@ window.currentPost = {
 
 window.Q = document.querySelector.bind(document);
 
+window.blobs = [];
+
 document.addEventListener('DOMContentLoaded', e => {
   window.db = new Dexie('unpost');
   db.version(2).stores({
@@ -22,6 +24,27 @@ document.addEventListener('DOMContentLoaded', e => {
       content: '',
       photos: []
     };
+    refreshPosts();
+  }
+
+  function refreshPost(post) {
+    let card = document.createElement('div');
+    card.className = 'mdl-card mdl-shadow--2dp';
+    card.innerHTML = '<div class="mdl-card__supporting-text">' + post.content + '<div class="post-photos"></div></div>';
+    Q('#posts').appendChild(card);
+    db.photos.where('post').equals(post.id).each(photo => {
+      let img = document.createElement('img');
+      let src = URL.createObjectURL(photo.content);
+      blobs.push(src);
+      img.src = src;
+      card.querySelector('.post-photos').appendChild(img);
+    });
+  }
+
+  function refreshPosts() {
+    Q('#posts').innerHTML = '';
+    blobs.forEach(URL.revokeObjectURL.bind(URL));
+    db.posts.orderBy('date').each(refreshPost);
   }
 
   Q('#add-post-fab')
@@ -51,4 +74,6 @@ document.addEventListener('DOMContentLoaded', e => {
             db.photos.put({post: id, name: p.name, type: p.type, content: p, isSynced: false})))
         ).then(closeEditor);
     });
+
+  refreshPosts();
 });

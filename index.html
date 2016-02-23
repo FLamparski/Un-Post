@@ -26,6 +26,22 @@ dialog .thumbs > img {
   height: 80px;
   margin: 0 5px;
 }
+#posts > .mdl-card {
+  width: 90%;
+  margin: 10px auto;
+}
+#posts .post-photos:empty {
+  display: none;
+}
+#posts .post-photos {
+  margin-top: 2em;
+  overflow: auto;
+  height: 120px;
+}
+#posts .post-photos img {
+  margin: 0 5px;
+  height: 120px;
+}
   </style>
 </head>
 <body>
@@ -58,6 +74,8 @@ dialog .thumbs > img {
     </div>
     <main class="mdl-layout__content">
       <div class="page-content">
+        <div id="posts">
+        </div>
         <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" id="add-post-fab">
           <i class="material-icons">add</i>
         </button>
