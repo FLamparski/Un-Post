@@ -1,0 +1,26 @@
+{
+  "name": "un-post",
+  "authors": [
+    "Filip Wieland <filiplamparski@gmail.com>"
+  ],
+  "description": "Experiment: saving media in indexed db while offline",
+  "main": "index.html",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "service-workers"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "dexie": "~1.2.0"
+  }
+}

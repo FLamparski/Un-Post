@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Un-Post</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.blue_grey-indigo.min.css" />
+  <style type="text/css" media="screen">
+#add-post-fab {
+  position: absolute;
+  bottom: 5%;
+  right: 10%;
+}
+#post-content-editor {
+  width: 100%;
+}
+dialog .thumbs:empty {
+  display: none;
+}
+dialog .thumbs {
+  height: 80px;
+  width: 232px;
+  overflow: auto;
+}
+dialog .thumbs > img {
+  height: 80px;
+  margin: 0 5px;
+}
+  </style>
+</head>
+<body>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+            mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                    mdl-textfield--floating-label mdl-textfield--align-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon"
+                 for="fixed-header-drawer-exp">
+            <i class="material-icons">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="sample"
+                   id="fixed-header-drawer-exp">
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Un-Post</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+      </nav>
+    </div>
+    <main class="mdl-layout__content">
+      <div class="page-content">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" id="add-post-fab">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+    </main>
+  </div>
+  <dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Add Post</h4>
+    <div class="mdl-dialog__content">
+      <form id="add-post-form">
+        <div class="mdl-textfield mdl-js-textfield">
+          <textarea class="mdl-textfield__input" type="text" rows="3" id="post-content-editor"></textarea>
+          <label class="mdl-textfield__label" for="address">Post Content</label>
+        </div>
+        <div class="thumbs"></div>
+        <input id="add-post-photos-input" type="file" multiple style="display: none" accept="image/*">
+        <button id="add-post-add-photos" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button">Add Photos</button>
+      </form>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button primary mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Add</button>
+      <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+  </dialog>
+  <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
+  <script src="./bower_components/dexie/dist/latest/Dexie.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
