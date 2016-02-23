@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', e => {
   function refreshPosts() {
     Q('#posts').innerHTML = '';
     blobs.forEach(URL.revokeObjectURL.bind(URL));
-    db.posts.orderBy('date').each(refreshPost);
+    db.posts.orderBy('date').reverse().each(refreshPost);
   }
 
   Q('#add-post-fab')
