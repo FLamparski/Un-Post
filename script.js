@@ -7,6 +7,30 @@ window.Q = document.querySelector.bind(document);
 
 window.blobs = [];
 
+function swMessage(message) {
+  // This wraps the message posting/response in a promise, which will resolve if the response doesn't
+  // contain an error, and reject with the error if it does. If you'd prefer, it's possible to call
+  // controller.postMessage() and set up the onmessage handler independently of a promise, but this is
+  // a convenient wrapper.
+  return new Promise(function(resolve, reject) {
+    var messageChannel = new MessageChannel();
+    messageChannel.port1.onmessage = function(event) {
+      if (event.data.error) {
+        reject(event.data.error);
+      } else {
+        resolve(event.data);
+      }
+    };
+
+    // This sends the message data as well as transferring messageChannel.port2 to the service worker.
+    // The service worker can then use the transferred port to reply via postMessage(), which
+    // will in turn trigger the onmessage handler on messageChannel.port1.
+    // See https://html.spec.whatwg.org/multipage/workers.html#dom-worker-postmessage
+    navigator.serviceWorker.controller.postMessage(message,
+      [messageChannel.port2]);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', e => {
   window.db = new Dexie('unpost');
   db.version(2).stores({
@@ -15,7 +39,7 @@ document.addEventListener('DOMContentLoaded', e => {
   });
   db.open();
 
-  function closeEditor() {
+  function closeEditor(special) {
     Q('dialog').close();
     Q('#post-content-editor').value = '';
     Q('dialog .thumbs').innerHTML = '';
@@ -24,7 +48,7 @@ document.addEventListener('DOMContentLoaded', e => {
       content: '',
       photos: []
     };
-    refreshPosts();
+    if (special === 'no-refresh') refreshPosts();
   }
 
   function refreshPost(post) {
@@ -68,12 +92,25 @@ document.addEventListener('DOMContentLoaded', e => {
     }));
   Q('dialog .primary')
     .addEventListener('click', e => {
-      db.posts.put({date: new Date(), content: currentPost.content, isSynced: false})
-        .then(id =>
-          Promise.all(currentPost.photos.map(p =>
-            db.photos.put({post: id, name: p.name, type: p.type, content: p, isSynced: false})))
-        ).then(closeEditor);
+      swMessage({name: 'savePost', post: currentPost});
+      closeEditor('no-refresh');
     });
 
+  navigator.serviceWorker.addEventListener('message', e => {
+    console.log(e.data);
+    if (e.data.name === 'updatePosts') setTimeout(refreshPosts, 0);
+  });
+
   refreshPosts();
+
+  navigator.serviceWorker.register('./serviceworker.js', {scope: '/'})
+    .then(yes => {
+      console.info('Registration complete, checking for controller...');
+      setTimeout(_ => {
+        if (!navigator.serviceWorker.controller) {
+          location.reload();
+        }
+      }, 10);
+    })
+    .catch(no => console.error('Error registering:', no))
 });
